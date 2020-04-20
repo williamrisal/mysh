@@ -14,19 +14,23 @@ int command(char *str)
     pid_t  pid = 0; 
     extern char **environ;
     int line_path = check_extenv("PATH");
+    char *tmp = malloc(sizeof(char) * my_strlen(str));
     char *command = malloc(sizeof(char) *my_strlen(str) + 2);
     char **args = malloc(sizeof(char *) * my_strlen(str) + 2);
     char *tmp_path = malloc(sizeof(char) * my_strlen(environ[line_path]) + 1);
+    int h = 0;
 
-    for (; *str == ';'; *str++);
+    for (; *str == ';' || *str == '|'; *str++);
+    for(int a = 0; str[a] != ';' && str[a] != '|' && str[a]; tmp[a] = str[a] ,a++);
+    tmp[my_strlen(tmp) - 1] == ' ' ? tmp[my_strlen(tmp) - 1] = 0 : 0;
     suprr_space;
+    for (; *tmp == ' '; *tmp++);
     recup_arg;
-   // printf("y->%d\n",y);
-    args[2] = NULL;
     if (access(my_strcatmall("/bin/",command), X_OK) == 0){
         if (fork() == 0){
-            printf("&%s&%s&%s&%s\n",command, args[0],args[1],args[2]);
             execve(my_strcatmall("/bin/", command), args, environ);
+            free(args);
+            free(command);
         return (0);
         }
         else waitpid(pid, &pid, WUNTRACED);
@@ -42,6 +46,8 @@ int command(char *str)
             if (access(tmp_path, X_OK) == 0){
                 if (fork() == 0){
                     execve(tmp_path, args, environ);
+                    free(args);
+                    free(command);
                     return (0);
                 }
                 else waitpid(pid, &pid, WUNTRACED);
@@ -51,8 +57,6 @@ int command(char *str)
         }
     }
     return (84);
-    free(args);
-    free(command);
 }
 
 int cd (char *str)

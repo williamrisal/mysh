@@ -16,15 +16,17 @@
 #include <string.h>
 #define var mglobal()
 #define vag jglobal()
-#define poin_virgule for (; *str != ';' && *str != '\0' && *str != 0; *str++); \
+#define poin_virgule for (int a = 0; *str != ';' &&*str != '|' && *str != '\0' && *str != 0; *str++,a++); \
                      detect_input(str);
 #define suprr_space for (; *str == ' '; *str++);
-#define recup_arg for (int a = 0; str[a] != ' ' && str[a]; a++) \
-    command[a] = str[a]; \
+#define recup_arg for (int a = 0; tmp[a] != ' ' && tmp[a]; a++) \
+    command[a] = tmp[a]; \
     command[my_strlen(command)] = '\0'; \
-    for (int i = 0, x = 0; i <= my_strlen(str); x = 0, i++, y++) { \
+    for (int i = 0, x = 0; i <= my_strlen(tmp); x = 0, i++, y++) { \
         args[y] = malloc(sizeof(char) * 501); \
-        while (str[i] != ' ' && str[i] && str[i] != ';' && str[i] != '\n' && (args[y][x++] = str[i++])); \
+        for (;tmp[i] != ' ' && tmp[i] && tmp[i] != ';' && tmp[i] != '|' && tmp[i] != '\n'; x++, i++){ \
+        args[y][x] = tmp[i];\
+        }\
         args[y][x] = '\0'; \
     }
     

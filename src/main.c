@@ -39,12 +39,15 @@ int main(void)
     do {
         write(0 , "ZshOlette >> $ ", 16);
         z = read(0, str,500);
+        if (z <= 0)
+            return(0);
         str[z - 1] = '\0';
         fonction_sys(str);
         _input = detect_input(str);
         input(_input, str);
         _input = 0;
     } while (str);
+    return (0);
 }
 
 void compt_ligne(void)
@@ -64,21 +67,24 @@ int poin_slash(char *str)
 {
     char **args = malloc(sizeof(char *) * my_strlen(str) + 2);
     char *command = malloc(sizeof(char) *my_strlen(str) + 2);
+    char *tmp = malloc(sizeof(char) * my_strlen(str));
     extern char **environ;
     int y = 0;
     pid_t  pid = 0;
-
+    for(int a = 0; str[a] != ';' && str[a] != '|' && str[a]; tmp[a] = str[a] ,a++);
+    tmp[my_strlen(tmp) - 1] = '\0';
     suprr_space;
     recup_arg;
     args[0] = "";
     suprr_space;
-    if (access(str, X_OK) != 0) {
-        my_putstr("./ade: Command not found.");
+    if (access(tmp, X_OK) != 0) {
+        my_putstr(tmp);
+        my_putstr(": Command not found.");
         my_putstr("\n");
     }
-    if (access(str, X_OK) == 0) {
+    if (access(tmp, X_OK) == 0) {
         if (fork() == 0) {
-            execve(str, args, environ);
+            execve(tmp, args, environ);
             return (0);
         }
         else { 
